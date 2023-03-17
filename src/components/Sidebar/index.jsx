@@ -289,7 +289,7 @@ const Sidebar = ({ children }) => {
         <Button
           style={{
             position: 'absolute',
-            bottom:  open ? 80 : 77,
+            bottom: open ? 80 : 77,
             width: '100%',
             height: 55,
             background: '#41C78F',
@@ -314,7 +314,7 @@ const Sidebar = ({ children }) => {
       </Drawer>
 
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: 800 }}>
-        <Grid container>
+        <Grid container sx={{ bgcolor: 'azure' }}>
           {children}
         </Grid>
 
