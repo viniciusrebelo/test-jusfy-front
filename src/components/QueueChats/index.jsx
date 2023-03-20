@@ -1,16 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Card, CardContent, CardHeader, Container, IconButton, Typography } from '@mui/material';
 import { ArrowCircleRightOutlined, ArrowCircleLeftOutlined } from '@mui/icons-material';
+import './style.css'
 
 const QueueChats = ({ title, cards }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [cardsPerSlide, setCardsPerSlide] = useState(2);
+
+
+  useEffect(() => {
+    // Verifica o tamanho da tela e define o número de cards por slide
+    const mediaQuery = window.matchMedia('(max-width: 600px)');
+    setCardsPerSlide(mediaQuery.matches ? 1 : 2);
+
+    // Atualiza o número de cards por slide quando o tamanho da tela for alterado
+    const handleResize = () => {
+      setCardsPerSlide(mediaQuery.matches ? 1 : 2);
+    }
+    mediaQuery.addListener(handleResize);
+    return () => mediaQuery.removeListener(handleResize);
+  }, []);
 
   const handleNext = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 2 <= cards?.length ? prevIndex + 2 : prevIndex));
+    setActiveIndex((prevIndex) => (prevIndex + cardsPerSlide <= cards?.length ? prevIndex + cardsPerSlide : prevIndex));
   };
 
   const handlePrev = () => {
-    setActiveIndex((prevIndex) => (prevIndex - 2 >= 0 ? prevIndex - 2 : prevIndex));
+    setActiveIndex((prevIndex) => (prevIndex - cardsPerSlide >= 0 ? prevIndex - cardsPerSlide : prevIndex));
   };
 
   const isSingleCard = cards?.length === 1;
@@ -23,12 +39,14 @@ const QueueChats = ({ title, cards }) => {
         display: 'flex',
         flexDirection: 'column',
         minHeight: 233,
+        maxWidth: '95vw',
+        mb: 3
       }}
     >
       <CardHeader sx={{
         //paddingBottom: 0,
         fontWeight: 600,
-        fontSize: '14px',
+        fontSize: '0,875rem',
         lineHeight: '18px',
         color: '#464E5F'
       }}
@@ -53,6 +71,7 @@ const QueueChats = ({ title, cards }) => {
             </div>
 
             <div
+              className="CardContent"
               style={{
                 display: 'flex',
                 overflowX: 'scroll',
@@ -63,32 +82,39 @@ const QueueChats = ({ title, cards }) => {
 
               }}
             >
-              {cards?.slice(activeIndex, activeIndex + 2).map((card, index) => (
-                <Box key={index} sx={{ width: '50%' }}>
-                  <CardContent sx={{ padding: 0 }}>{card}</CardContent>
-                </Box>
+              {cards.slice(activeIndex, activeIndex + cardsPerSlide).map((card, index) => (
+                <div
+                  key={index}
+                  style={{
+                    minWidth: 225,
+                    margin: '0 8px'
+                  }}
+                >
+                  {card}
+                </div>
               ))}
             </div>
+
             <div style={{
               display: 'flex',
               height: '100%',
               justifyContent: "center",
               alignItems: "center"
             }}>
-              <IconButton onClick={handleNext} disabled={activeIndex + 2 >= cards?.length}>
+              <IconButton onClick={handleNext} disabled={activeIndex + cardsPerSlide >= cards?.length}>
                 <ArrowCircleRightOutlined />
               </IconButton>
             </div>
-
           </>
         ) : (
-          <Card sx={{ flexGrow: 1, maxWidth: '100%' }}>
-            <CardContent></CardContent>
-          </Card>
+          <Typography sx={{ padding: '16px' }} variant='body1'>
+            Sem chats na fila
+          </Typography>
         )}
       </CardContent>
     </Card>
   );
-}
+};
 
-export default QueueChats;
+
+export default QueueChats

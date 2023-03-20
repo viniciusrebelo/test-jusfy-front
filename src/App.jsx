@@ -1,115 +1,138 @@
-import { Box, Button, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, Button, Card, Typography, useTheme } from '@mui/material';
 import QueueChats from './components/QueueChats';
 import Sidebar from './components/Sidebar';
 import BankIcon from './components/QueueChats/bank-1.svg'
+import { useEffect, useState } from 'react';
+import Opportunities from './components/Opportunities';
 
 
-const CardItem = ({ nome, motivo, topico, resumo }) => {
+const CardItem = ({ nome, motivo, topico, resumo, mobileQuery }) => {
+  const theme = useTheme();
+  const [isMobile, serIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 1000px)');
+    serIsMobile(mediaQuery.matches ? true : false);
+
+    const handleResize = () => {
+      serIsMobile(mediaQuery.matches ? true : false);
+    }
+    mediaQuery.addListener(handleResize);
+    return () => mediaQuery.removeListener(handleResize);
+  }, []);
 
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'row',
-        minWidth: 381,
-        minHeight: 112,
+        flexDirection: 'column',
+        maxWidth: theme.breakpoints.values.lg,
+        width: '100%',
+        minHeight: 114,
         p: 1,
-        //bgcolor: 'aquamarine'
-      }}>
-      <div style={{
-        marginRight: 24
-      }}>
-        <img src={BankIcon} alt="BankIcon" />
-      </div>
-      <div
-        style={{
-          minWidth: 325
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: '1rem',
-            lineHeight: '18px',
-            paddingBottom: 0,
-            fontWeight: '600'
-          }}
-          variant="subtitle1"
-          color="#464E5F">
-          {nome}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: '1rem',
-            lineHeight: '18px',
-            paddingBottom: '8px',
-          }}
-          variant="subtitle2"
-          color="#B5B5C3">
-          {topico}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: '0.75rem',
-            lineHeight: '16px',
-            paddingBottom: '8px'
+        marginBottom: 2,
+      }}
+    >
 
-          }}
-          variant="body2"
-          color="#000">
-          <strong>Motivo: </strong>{motivo}
-        </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        {!isMobile && (
+          <Box sx={{ marginRight: '0.5rem' }}>
+            <img src={BankIcon} alt="BankIcon" />
+          </Box>
+        )}
+        <Box sx={{ flex: 1 }}>
+          <Typography
+            sx={{
+              fontSize: '1rem',
+              lineHeight: '1.125rem',
+              paddingBottom: 0,
+              fontWeight: '600'
+            }}
+            variant="subtitle1"
+            color="#464E5F"
+          >
+            {nome}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: '1rem',
+              lineHeight: '1.125rem',
+              paddingBottom: '0.5rem',
+            }}
+            variant="subtitle2"
+            color="#B5B5C3"
+          >
+            {topico}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: '0.75rem',
+              lineHeight: '1rem',
+              paddingBottom: '0.5rem'
+            }}
+            variant="body2"
+            color="#000"
+          >
+            <strong>Motivo do contato: </strong>
+            {motivo}
+          </Typography>
 
-        <Typography
-          sx={{
-            fontSize: '0.75rem',
-            lineHeight: '16px',
-            paddingBottom: '16px'
-          }}
-          variant="inherit"
-          color="#464E5F">
-          <strong>Resumo: </strong>{resumo}
-        </Typography>
+          <Typography
+            sx={{
+              fontSize: '0.75rem',
+              lineHeight: '1rem',
+              paddingBottom: '1rem',
+              //whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}
+            variant="inherit"
+            color="#464E5F"
+          >
+            <strong>Resumo: </strong>
+            {resumo}
+          </Typography>
 
-        <div>
           <Button
             sx={{
               background: '#41C78F',
-              marginRight: 4,
-              padding: '8 14',
-              fontSize: '12px',
-              lineHeight: '16px',
+              marginRight: '0.5rem',
+              padding: '0.5rem 0.875rem',
+              fontSize: '0.75rem',
+              lineHeight: '1rem',
               transition: '0.3s',
               '&:hover': {
                 opacity: 0.9,
-                backgroundColor: '#41C78F',
-              },
+                backgroundColor: '#41C78F'
+              }
             }}
-            variant='contained'
+            variant="contained"
           >
             Enviar mensagem
           </Button>
           <Button
             sx={{
-              color: '#41C78F',
-              padding: '8 14',
-              fontSize: '12px',
-              lineHeight: '16px',
+              color: '#464E5F',
+              padding: '0.5rem 0.875rem',
+              fontSize: '0.75rem',
+              lineHeight: '1rem',
+              border: '1px solid #41C78F',
               '&:hover': {
                 color: '#fff',
                 opacity: 0.9,
                 backgroundColor: '#41C78F',
-              },
+                border: '1px solid #fff'
+              }
             }}
-            variant='outlined'>
+            variant="outlined"
+          >
             Saiba mais
           </Button>
-        </div>
-      </div>
-
+        </Box>
+      </Box>
     </Box>
-  )
-}
+  );
+};
 
 const App = () => {
 
@@ -149,6 +172,7 @@ const App = () => {
   return (
     <Sidebar>
       <QueueChats cards={cards} title="Destaque de pessoas online no momento" />
+      <Opportunities />
     </Sidebar>
   );
 }

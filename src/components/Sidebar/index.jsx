@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import { Button, Collapse, Grid } from '@mui/material';
+import { AppBar, Button, Collapse, Grid, Toolbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -22,6 +22,7 @@ import JusFileIcon from './icons/message.svg'
 import Call from './icons/call.svg'
 import NewCalc from './icons/note-favorite.svg'
 import UserCard from './UserCard';
+import Header from './Header';
 
 const drawerWidth = 312;
 
@@ -313,11 +314,22 @@ const Sidebar = ({ children }) => {
         </DrawerFooter>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3, width: 800 }}>
-        <Grid container sx={{ bgcolor: 'azure' }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          pt: '24px',
+          pl: 2,
+          pr: 2,
+          width: '100%',
+          height: '100%',
+          bgcolor: '#F3F6F9',
+          overflowX: 'hidden'
+        }}>
+        <Header />
+        <Grid container>
           {children}
         </Grid>
-
       </Box>
     </Box>
   );
